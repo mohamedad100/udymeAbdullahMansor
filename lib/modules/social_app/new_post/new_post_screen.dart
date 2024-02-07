@@ -26,16 +26,16 @@ var textController=TextEditingController();
                     if(SocialCubit.get(context).postImage == null){
                       SocialCubit.get(context).createPost(
                           dateTime: now.toString(),
-                          text: textController.text
+                          text: textController.text,
                       );
-
-
                     }else{
                       SocialCubit.get(context).uploadPostImage(
                           dateTime: now.toString(),
                           text: textController.text
                       );
                     }
+                    SocialCubit.get(context).getPosts();
+                    Navigator.pop(context);
                   },
                   child: Text(
                     'post',

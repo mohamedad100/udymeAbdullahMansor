@@ -11,7 +11,9 @@ class ChatDetailsScreen extends StatelessWidget {
  SocialUserModel? userModel;
  ChatDetailsScreen({this.userModel});
  var messageController = TextEditingController();
-  @override
+ final ScrollController controller = ScrollController();
+
+ @override
   Widget build(BuildContext context) {
     return  Builder(
       builder: (BuildContext context) {
@@ -43,7 +45,9 @@ class ChatDetailsScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ListView.separated(
-                            physics: BouncingScrollPhysics(),
+                          reverse: true,
+                      controller:controller,
+                      physics: BouncingScrollPhysics(),
                             itemBuilder: (context,index){
                               var message = SocialCubit.get(context).message[index];
                              if(SocialCubit.get(context).userModel!.uId == message.senderId)
@@ -81,6 +85,9 @@ class ChatDetailsScreen extends StatelessWidget {
                                       color: Colors.grey[400]
                                   ),
                                 ),
+                                onTap: (){
+
+                                },
                               ),
                             ),
                             Container(
@@ -93,6 +100,13 @@ class ChatDetailsScreen extends StatelessWidget {
                                       dateTime: DateTime.now().toString(),
                                       text: messageController.text
                                   );
+                                  messageController.clear();
+                                  //messageController.text='';
+                                  // controller.animateTo(
+                                  //   10000,
+                                  //   duration: Duration(milliseconds: 300),
+                                  //   curve: Curves.easeOut,
+                                  // );
                                 },
                                 minWidth: 1,
                                 child: Icon(

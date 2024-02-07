@@ -7,6 +7,7 @@ import 'package:untitled/layout/social_app/cubit/states.dart';
 import 'package:untitled/shared/components/components.dart';
 
 import '../../modules/social_app/new_post/new_post_screen.dart';
+import '../../modules/social_app/search/users_search.dart';
 import 'cubit/cubit.dart';
 
 class SocialLayout extends StatelessWidget {
@@ -26,7 +27,12 @@ class SocialLayout extends StatelessWidget {
             title: Text(cubit.titels[cubit.currentIndex]),
             actions: [
               IconButton(onPressed: (){}, icon: Icon(Icons.notifications_none)),
-              IconButton(onPressed: (){}, icon: Icon(Icons.search_outlined)),
+              IconButton(onPressed: ()async{
+                await showSearch(
+                context: context,
+                delegate: UsersSearchDelegate(),
+                );
+              }, icon: Icon(Icons.search_outlined)),
 
             ],
           ),

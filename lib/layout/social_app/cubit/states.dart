@@ -41,8 +41,23 @@ class SocialLikePostErrorStates extends SocialStates{
 
   SocialLikePostErrorStates(this.error);
 }
+//dis like
+class SocialDisLikePostSuccessStates extends SocialStates{}
 
+class SocialDisLikePostErrorStates extends SocialStates{
+  final String error;
 
+  SocialDisLikePostErrorStates(this.error);
+}
+//iLike post
+class SocialCommentPostSuccessStates extends SocialStates{}
+
+class SocialCommentPostErrorStates extends SocialStates{
+  final String error;
+
+  SocialCommentPostErrorStates(this.error);
+}
+//
 class SocialChangeBottomNavStates extends SocialStates{}
 
 class SocialNewPostStates extends SocialStates{}

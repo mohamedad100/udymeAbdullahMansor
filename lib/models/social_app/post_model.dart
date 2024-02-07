@@ -1,3 +1,5 @@
+import 'comment_model.dart';
+
 class PostModel{
 
   String? name;
@@ -6,6 +8,8 @@ class PostModel{
   String? dateTime;
   String? text;
   String? postImage;
+  List? usersIdsOfLikes;
+  List<CommentModel>? comments;
 
   PostModel({
     this.name,
@@ -14,6 +18,8 @@ class PostModel{
     this.dateTime,
     this.text,
     this.postImage,
+    this.usersIdsOfLikes,
+    this.comments,
 
   });
   PostModel.fromJson(Map<String,dynamic>json){

@@ -8,14 +8,17 @@ import 'package:untitled/models/social_app/post_model.dart';
 import 'package:untitled/shared/components/components.dart';
 import 'package:untitled/shared/styles/colors.dart';
 
+import 'post_item_widget.dart';
+
 class FeedsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SocialCubit,SocialStates>(
-      listener: (BuildContext context, state) {  },
+    return BlocConsumer<SocialCubit, SocialStates>(
+      listener: (BuildContext context, state) {},
       builder: (BuildContext context, SocialStates state) {
         return ConditionalBuilder(
-          condition: SocialCubit.get(context).posts.length > 0 && SocialCubit.get(context).userModel != null,
+          condition: SocialCubit.get(context).posts.length > 0 &&
+              SocialCubit.get(context).userModel != null,
           builder: (BuildContext context) {
             return SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -42,9 +45,10 @@ class FeedsScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             'Chats with Friends',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.white,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: Colors.white,
+                                    ),
                           ),
                         ),
                       ],
@@ -54,9 +58,36 @@ class FeedsScreen extends StatelessWidget {
                     shrinkWrap: true,
                     //shrinkWrap & physics لازم احطها لليست ادام هي جوه سينجل اسكرول فيو
                     physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => buildPostItem(SocialCubit.get(context).posts[index],context,index),
-                    itemCount:SocialCubit.get(context).posts.length,
-                    separatorBuilder: (BuildContext context, int index) =>SizedBox(
+                    itemBuilder: (context, index) {
+                      // bool isLiked = SocialCubit.get(context).idsOfLikes[SocialCubit.get(context).postsId[index]]?.firstWhere((element) => element ==  SocialCubit.get(context).userModel!.uId, orElse: () => null) != null;
+                      // bool isLikedd = SocialCubit.get(context).posts[index].usersIdsOfLikes?.firstWhere((element) => element ==  SocialCubit.get(context).userModel!.uId, orElse: () => null) != null;
+
+                      bool isLiked = SocialCubit.get(context)
+                              .posts[index]
+                              .usersIdsOfLikes
+                              ?.firstWhere(
+                                  (element) =>
+                                      element ==
+                                      SocialCubit.get(context).userModel!.uId,
+                                  orElse: () => null) !=
+                          null;
+
+                      return PostItemWidget(
+                          SocialCubit.get(context).posts[index],
+                          context ,
+                          index ,
+                          isLiked,
+                        //  SocialCubit.get(context).coment[SocialCubit.get(context).postsId[index]],
+                      );
+                      // return buildPostItem(
+                      //     SocialCubit.get(context).posts[index],
+                      //     context,
+                      //     index,
+                      //     isLiked);
+                    },
+                    itemCount: SocialCubit.get(context).posts.length,
+                    separatorBuilder: (BuildContext context, int index) =>
+                        SizedBox(
                       height: 8,
                     ),
                   ),
@@ -67,18 +98,14 @@ class FeedsScreen extends StatelessWidget {
               ),
             );
           },
-          fallback: (BuildContext context)=> Center(child: CircularProgressIndicator()),
-
-
+          fallback: (BuildContext context) =>
+              Center(child: CircularProgressIndicator()),
         );
       },
-
-
-
     );
   }
 
-  Widget buildPostItem(PostModel model,context,index) => Card(
+  Widget buildPostItem(PostModel model, context, index, bool isLiked) => Card(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         elevation: 5,
         margin: EdgeInsets.symmetric(horizontal: 8),
@@ -91,8 +118,7 @@ class FeedsScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 25,
-                    backgroundImage: NetworkImage(
-                        '${model.image}'),
+                    backgroundImage: NetworkImage('${model.image}'),
                   ),
                   SizedBox(
                     width: 15,
@@ -185,24 +211,21 @@ class FeedsScreen extends StatelessWidget {
               //     ),
               //   ),
               // ),
-              if(model.postImage != '')
-              Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  top: 15
-                ),
-                child: Container(
-                  height: 140,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    image: DecorationImage(
-                      image: NetworkImage(
-                          '${model.postImage}'),
-                      fit: BoxFit.cover,
+              if (model.postImage != '')
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(top: 15),
+                  child: Container(
+                    height: 140,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      image: DecorationImage(
+                        image: NetworkImage('${model.postImage}'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Row(
@@ -286,14 +309,26 @@ class FeedsScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => Container(
+                            height: double.infinity,
+                            child: Center(
+                              child: Text('comments'),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   InkWell(
                     child: Row(
                       children: [
                         Icon(
-                          Icons.favorite_border,
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          //SocialCubit.get(context).suffix,
                           color: Colors.red,
                         ),
                         SizedBox(
@@ -306,7 +341,14 @@ class FeedsScreen extends StatelessWidget {
                       ],
                     ),
                     onTap: () {
-                      SocialCubit.get(context).likePost(SocialCubit.get(context).postsId[index]);
+                      // SocialCubit.get(context).likePost(SocialCubit.get(context).postsId[index]);
+                      if (isLiked) {
+                        SocialCubit.get(context).disslikePost(
+                            SocialCubit.get(context).postsId[index]);
+                      } else {
+                        SocialCubit.get(context)
+                            .likePost(SocialCubit.get(context).postsId[index]);
+                      }
                     },
                   ),
                 ],
